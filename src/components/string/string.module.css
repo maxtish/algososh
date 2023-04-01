@@ -1,0 +1,22 @@
+.form {
+  display: grid;
+  grid-template-columns: 377px auto;
+  gap: 4px 12px;
+  justify-content: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  list-style-type: none;
+  margin-top: 120px;
+}
+
+.item {
+  margin-left: 16px;
+}
+
+.item:first-of-type {
+  margin-left: 0;
+}
