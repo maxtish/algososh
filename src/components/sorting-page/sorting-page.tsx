@@ -10,18 +10,6 @@ import { delay } from '../string/string';
 
 type TMainArray = Array<{ item: number; state: ElementStates }>;
 
-const swap = (
-  arr: Array<{ item: number; state: ElementStates }>,
-  setArray: Dispatch<SetStateAction<TMainArray>>,
-  firstIndex: number,
-  secondIndex: number
-) => {
-  const temp = arr[firstIndex];
-  arr[firstIndex] = arr[secondIndex];
-  arr[secondIndex] = temp;
-  setArray(arr);
-};
-
 export const SortingPage: React.FC = () => {
   let arr: Array<{ item: number; state: ElementStates }> = [];
 
@@ -32,17 +20,29 @@ export const SortingPage: React.FC = () => {
       return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
     }
 
-    for (let i = 0; i < getRandomInt(3, 17); i++) {
-      arr.push({ item: getRandomInt(0, 100), state: ElementStates.Default });
+    for (let i = 0; i < getRandomInt(3, 18); i++) {
+      arr.push({ item: getRandomInt(0, 101), state: ElementStates.Default });
     }
-    console.log(arr);
     return arr;
   };
+
   const [mainArray, setMainArray] = useState<TMainArray>(randomArr());
   const [checked, setChecked] = useState<string>('select');
-
+  console.log(mainArray);
   const newRandomArr = () => {
     setMainArray(randomArr());
+  };
+
+  const swap = (
+    arr: Array<{ item: number; state: ElementStates }>,
+    setArray: Dispatch<SetStateAction<TMainArray>>,
+    firstIndex: number,
+    secondIndex: number
+  ) => {
+    const temp = arr[firstIndex];
+    arr[firstIndex] = arr[secondIndex];
+    arr[secondIndex] = temp;
+    setArray(arr);
   };
 
   const selectionSort = async (
@@ -53,7 +53,6 @@ export const SortingPage: React.FC = () => {
     const { length } = arr;
 
     for (let i = 0; i < length - 1; i++) {
-      console.log('i=', i);
       let maxInd = i;
 
       for (let j = i; j < length; j++) {
@@ -80,17 +79,54 @@ export const SortingPage: React.FC = () => {
     setArray([...arr]);
   };
 
+  const bubbleSort = async (arr: TMainArray, direction: Direction, setArray: Dispatch<SetStateAction<TMainArray>>) => {
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr.length - i - 1; j++) {
+        arr[j].state = ElementStates.Changing;
+        arr[j + 1].state = ElementStates.Changing;
+        setArray([...arr]);
+        await delay(1000);
+
+        if (direction === Direction.Ascending) {
+          if (arr[j].item > arr[j + 1].item) {
+            // сортируем элементы по возрастанию
+            swap(arr, setArray, j, j + 1);
+          }
+        } else if (direction === Direction.Descending) {
+          if (arr[j].item < arr[j + 1].item) {
+            // сортируем элементы по возрастанию
+            swap(arr, setArray, j, j + 1);
+          }
+        }
+
+        arr[j].state = ElementStates.Default;
+        arr[j + 1].state = ElementStates.Default;
+
+        setArray([...arr]);
+      }
+
+      arr[arr.length - i - 1].state = ElementStates.Modified;
+      setArray([...arr]);
+    }
+  };
+
   const sortDescending = () => {
     if (mainArray.length > 0) {
-      console.log(mainArray);
-      selectionSort(mainArray, Direction.Descending, setMainArray);
+      if (checked === 'select') {
+        selectionSort(mainArray, Direction.Descending, setMainArray);
+      } else {
+        bubbleSort(mainArray, Direction.Descending, setMainArray);
+      }
     }
   };
 
   const sortAscending = () => {
     if (mainArray.length > 0) {
-      console.log(mainArray);
-      selectionSort(mainArray, Direction.Ascending, setMainArray);
+      if (checked === 'select') {
+        selectionSort(mainArray, Direction.Ascending, setMainArray);
+      } else {
+        bubbleSort(mainArray, Direction.Ascending, setMainArray);
+      }
     }
   };
 
@@ -119,7 +155,7 @@ export const SortingPage: React.FC = () => {
       </div>
       {mainArray && (
         <ul className={styles.list}>
-          {mainArray?.map((item, index) => (
+          {mainArray.map((item, index) => (
             <li key={index}>
               <Column index={item.item} state={item.state} />
             </li>
