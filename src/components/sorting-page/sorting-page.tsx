@@ -9,10 +9,25 @@ import { ElementStates } from '../../types/element-states';
 import { delay } from '../string/string';
 
 type TMainArray = Array<{ item: number; state: ElementStates }>;
+type TButState = {
+  radioInput: boolean;
+  butAsc: boolean;
+  butDes: boolean;
+  butNewArr: boolean;
+  butAscLoad: boolean;
+  butDesLoad: boolean;
+};
 
 export const SortingPage: React.FC = () => {
   let arr: Array<{ item: number; state: ElementStates }> = [];
-
+  const [butState, setButState] = useState<TButState>({
+    radioInput: false,
+    butAsc: false,
+    butAscLoad: false,
+    butDes: false,
+    butDesLoad: false,
+    butNewArr: false,
+  });
   const randomArr = () => {
     function getRandomInt(min: number, max: number) {
       min = Math.ceil(min);
@@ -28,7 +43,6 @@ export const SortingPage: React.FC = () => {
 
   const [mainArray, setMainArray] = useState<TMainArray>(randomArr());
   const [checked, setChecked] = useState<string>('select');
-  console.log(mainArray);
   const newRandomArr = () => {
     setMainArray(randomArr());
   };
@@ -76,6 +90,7 @@ export const SortingPage: React.FC = () => {
       swap(arr, setArray, i, maxInd);
       arr[i].state = ElementStates.Modified;
     }
+    arr[length - 1].state = ElementStates.Modified;
     setArray([...arr]);
   };
 
@@ -110,23 +125,57 @@ export const SortingPage: React.FC = () => {
     }
   };
 
-  const sortDescending = () => {
+  const sortDescending = async () => {
     if (mainArray.length > 0) {
+      setButState({
+        radioInput: true,
+        butAsc: true,
+        butAscLoad: false,
+        butDes: false,
+        butDesLoad: true,
+        butNewArr: true,
+      });
       if (checked === 'select') {
-        selectionSort(mainArray, Direction.Descending, setMainArray);
-      } else {
-        bubbleSort(mainArray, Direction.Descending, setMainArray);
+        await selectionSort(mainArray, Direction.Descending, setMainArray);
       }
+      if (checked === 'bubble') {
+        await bubbleSort(mainArray, Direction.Descending, setMainArray);
+      }
+      setButState({
+        radioInput: false,
+        butAsc: false,
+        butAscLoad: false,
+        butDes: false,
+        butDesLoad: false,
+        butNewArr: false,
+      });
     }
   };
 
-  const sortAscending = () => {
+  const sortAscending = async () => {
     if (mainArray.length > 0) {
+      setButState({
+        radioInput: true,
+        butAsc: false,
+        butAscLoad: true,
+        butDes: true,
+        butDesLoad: false,
+        butNewArr: true,
+      });
       if (checked === 'select') {
-        selectionSort(mainArray, Direction.Ascending, setMainArray);
-      } else {
-        bubbleSort(mainArray, Direction.Ascending, setMainArray);
+        await selectionSort(mainArray, Direction.Ascending, setMainArray);
       }
+      if (checked === 'bubble') {
+        await bubbleSort(mainArray, Direction.Ascending, setMainArray);
+      }
+      setButState({
+        radioInput: false,
+        butAsc: false,
+        butAscLoad: false,
+        butDes: false,
+        butDesLoad: false,
+        butNewArr: false,
+      });
     }
   };
 
@@ -139,19 +188,35 @@ export const SortingPage: React.FC = () => {
             checked={checked === 'select'}
             onChange={() => setChecked('select')}
             label="Выбор"
+            disabled={butState.radioInput}
           />
           <RadioInput
             value="bubble"
             checked={checked === 'bubble'}
             onChange={() => setChecked('bubble')}
             label="Пузырёк"
+            disabled={butState.radioInput}
           />
         </div>
         <div className={styles.sort}>
-          <Button text="По возрастанию" type="button" onClick={sortAscending} sorting={Direction.Ascending} />
-          <Button text="По убыванию" type="button" onClick={sortDescending} sorting={Direction.Descending} />
+          <Button
+            text="По возрастанию"
+            type="button"
+            disabled={butState.butAsc}
+            onClick={sortAscending}
+            isLoader={butState.butAscLoad}
+            sorting={Direction.Ascending}
+          />
+          <Button
+            text="По убыванию"
+            type="button"
+            disabled={butState.butDes}
+            isLoader={butState.butDesLoad}
+            onClick={sortDescending}
+            sorting={Direction.Descending}
+          />
         </div>
-        <Button text="Новый массив" type="button" onClick={newRandomArr} />
+        <Button text="Новый массив" type="button" disabled={butState.butNewArr} onClick={newRandomArr} />
       </div>
       {mainArray && (
         <ul className={styles.list}>

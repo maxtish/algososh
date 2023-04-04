@@ -5,7 +5,6 @@ export function useSimpleForm(inputValue: string) {
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value;
-    console.log(input);
     setInput(input);
   };
   return { input, onChange, setInput };
