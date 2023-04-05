@@ -74,15 +74,13 @@ export const QueuePage: React.FC = () => {
           butClean: false,
         }));
       }
-      setButtonState((prev) => ({
-        ...prev,
-        butDelLoad: false,
-        butDel: true,
-      }));
+
       setMainArray([...mainArray]);
       return;
     }
 
+    mainArray[indexHead].state = ElementStates.Changing;
+    setMainArray([...mainArray]);
     await delay(500);
     queue.dequeue();
     mainArray[indexHead] = {
