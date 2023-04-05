@@ -1,0 +1,31 @@
+.container {
+  margin: auto;
+  width: 76%;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 204px 1fr 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.wrapindex {
+  margin-top: 38px;
+  display: grid;
+  grid-template-columns: 204px 1fr 1fr;
+  gap: 12px;
+}
+
+.list {
+  margin-top: 90px;
+  list-style-type: none;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
