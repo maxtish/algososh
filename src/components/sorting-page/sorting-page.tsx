@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { RadioInput } from '../ui/radio-input/radio-input';
 import { Button } from '../ui/button/button';
@@ -28,24 +28,30 @@ export const SortingPage: React.FC = () => {
     butDesLoad: false,
     butNewArr: false,
   });
-  const randomArr = () => {
-    function getRandomInt(min: number, max: number) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
-    }
 
-    for (let i = 0; i < getRandomInt(3, 18); i++) {
-      arr.push({ item: getRandomInt(0, 101), state: ElementStates.Default });
+  const getRandomInt = (minimum: number, maximum: number) => {
+    return Math.round(Math.random() * (maximum - minimum) + minimum);
+  };
+
+  const randomArr = () => {
+    const lenArr: number = getRandomInt(3, 17);
+    for (let i = 0; i < lenArr; i++) {
+      arr.push({ item: getRandomInt(0, 100), state: ElementStates.Default });
     }
     return arr;
   };
 
-  const [mainArray, setMainArray] = useState<TMainArray>(randomArr());
+  const [mainArray, setMainArray] = useState<TMainArray>([]);
   const [checked, setChecked] = useState<string>('select');
+
   const newRandomArr = () => {
     setMainArray(randomArr());
   };
+
+  // Начальное значение
+  useEffect(() => {
+    setMainArray(randomArr());
+  }, []);
 
   const swap = (
     arr: Array<{ item: number; state: ElementStates }>,
