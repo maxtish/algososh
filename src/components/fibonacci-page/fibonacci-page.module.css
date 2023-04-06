@@ -1,0 +1,20 @@
+.form {
+  display: grid;
+  grid-template-columns: 377px auto;
+  gap: 4px 12px;
+  justify-content: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style-type: none;
+  max-width: 85%;
+  gap: 16px;
+}
+
+.item {
+  margin-top: 48px;
+}

@@ -1,0 +1,19 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.container {
+  display: flex;
+  gap: 12px;
+  width: 630px;
+}
+
+.list {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  list-style-type: none;
+  margin: 48px 0 0 0;
+}

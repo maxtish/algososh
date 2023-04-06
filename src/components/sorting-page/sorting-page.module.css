@@ -1,0 +1,25 @@
+.wrapper {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.method {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.sort {
+  display: flex;
+  gap: 12px;
+}
+
+.list {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  gap: 10px;
+  margin-top: 48px;
+  list-style-type: none;
+  height: 320px;
+}
