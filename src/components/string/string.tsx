@@ -1,11 +1,11 @@
-import React, { useState, FormEvent } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import { Input } from '../ui/input/input';
-import { Button } from '../ui/button/button';
-import styles from './string.module.css';
-import { useSimpleForm } from '../../hooks/useForm';
-import { ElementStates } from '../../types/element-states';
-import { Circle } from '../ui/circle/circle';
+import React, { useState, FormEvent } from "react";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { Input } from "../ui/input/input";
+import { Button } from "../ui/button/button";
+import styles from "./string.module.css";
+import { useSimpleForm } from "../../hooks/useForm";
+import { ElementStates } from "../../types/element-states";
+import { Circle } from "../ui/circle/circle";
 
 export const delay = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -14,10 +14,14 @@ export const delay = (ms: number) => {
 export const StringComponent: React.FC = () => {
   let arr: Array<{ item: string; state: ElementStates }> = [];
   const [isLoading, setIsLoading] = useState(false);
-  const { input, onChange, setInput } = useSimpleForm('');
+  const { input, onChange, setInput } = useSimpleForm("");
   const [mainArray, setMainArray] = useState<typeof arr>();
 
-  const swap = (arr: Array<{ item: string; state: ElementStates }>, firstIndex: number, secondIndex: number) => {
+  const swap = (
+    arr: Array<{ item: string; state: ElementStates }>,
+    firstIndex: number,
+    secondIndex: number
+  ) => {
     const temp = {
       item: arr[firstIndex].item,
       state: ElementStates.Modified,
@@ -33,11 +37,13 @@ export const StringComponent: React.FC = () => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setInput('');
+    setInput("");
 
-    const letters: Array<string> = input.split('');
+    const letters: Array<string> = input.split("");
 
-    letters.forEach((item) => arr.push({ item: item, state: ElementStates.Default }));
+    letters.forEach((item) =>
+      arr.push({ item: item, state: ElementStates.Default })
+    );
 
     let len = arr.length;
     let left = 0;
@@ -67,8 +73,18 @@ export const StringComponent: React.FC = () => {
   return (
     <SolutionLayout title="Строка">
       <form className={styles.form} onSubmit={onSubmit}>
-        <Input isLimitText={true} maxLength={11} value={input || ''} onChange={onChange} />
-        <Button text="Развернуть" type="submit" isLoader={isLoading} disabled={input.length < 2} />
+        <Input
+          isLimitText={true}
+          maxLength={11}
+          value={input || ""}
+          onChange={onChange}
+        />
+        <Button
+          text="Развернуть"
+          type="submit"
+          isLoader={isLoading}
+          disabled={input.length < 2}
+        />
       </form>
       {mainArray && (
         <ul className={styles.list}>
