@@ -1,12 +1,12 @@
-import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import { RadioInput } from '../ui/radio-input/radio-input';
-import { Button } from '../ui/button/button';
-import { Direction } from '../../types/direction';
-import styles from './sorting-page.module.css';
-import { Column } from '../ui/column/column';
-import { ElementStates } from '../../types/element-states';
-import { delay } from '../string/string';
+import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { RadioInput } from "../ui/radio-input/radio-input";
+import { Button } from "../ui/button/button";
+import { Direction } from "../../types/direction";
+import styles from "./sorting-page.module.css";
+import { Column } from "../ui/column/column";
+import { ElementStates } from "../../types/element-states";
+import { delay } from "../string/string";
 
 type TMainArray = Array<{ item: number; state: ElementStates }>;
 type TButState = {
@@ -16,6 +16,100 @@ type TButState = {
   butNewArr: boolean;
   butAscLoad: boolean;
   butDesLoad: boolean;
+};
+
+const swap = (
+  arr: Array<{ item: number; state: ElementStates }>,
+
+  firstIndex: number,
+  secondIndex: number,
+  setArray?: Dispatch<SetStateAction<TMainArray>>
+) => {
+  const temp = arr[firstIndex];
+  arr[firstIndex] = arr[secondIndex];
+  arr[secondIndex] = temp;
+  setArray && setArray(arr);
+};
+
+export const selectionSort = async (
+  arr: TMainArray,
+  direction: Direction,
+  setArray?: Dispatch<SetStateAction<TMainArray>>
+) => {
+  const { length } = arr;
+  if (length === 0 || length === 1) {
+    return null;
+  } else {
+    for (let i = 0; i < length - 1; i++) {
+      let maxInd = i;
+
+      for (let j = i; j < length; j++) {
+        arr[i].state = ElementStates.Changing;
+        arr[j].state = ElementStates.Changing;
+        setArray && setArray([...arr]);
+        await delay(1000);
+        if (direction === Direction.Descending) {
+          if (arr[maxInd].item < arr[j].item) {
+            maxInd = j;
+          }
+        } else if (direction === Direction.Ascending) {
+          if (arr[maxInd].item > arr[j].item) {
+            maxInd = j;
+          }
+        }
+        arr[j].state = ElementStates.Default;
+        setArray && setArray([...arr]);
+      }
+
+      swap(arr, i, maxInd, setArray);
+      arr[i].state = ElementStates.Modified;
+    }
+    arr[length - 1].state = ElementStates.Modified;
+    setArray && setArray([...arr]);
+
+    return arr;
+  }
+};
+
+export const bubbleSort = async (
+  arr: TMainArray,
+  direction: Direction,
+  setArray?: Dispatch<SetStateAction<TMainArray>>
+) => {
+  const { length } = arr;
+  if (length === 0 || length === 1) {
+    return null;
+  } else {
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr.length - i - 1; j++) {
+        arr[j].state = ElementStates.Changing;
+        arr[j + 1].state = ElementStates.Changing;
+        setArray && setArray([...arr]);
+        await delay(1000);
+
+        if (direction === Direction.Ascending) {
+          if (arr[j].item > arr[j + 1].item) {
+            // сортируем элементы по возрастанию
+            swap(arr, j, j + 1, setArray);
+          }
+        } else if (direction === Direction.Descending) {
+          if (arr[j].item < arr[j + 1].item) {
+            // сортируем элементы по возрастанию
+            swap(arr, j, j + 1, setArray);
+          }
+        }
+
+        arr[j].state = ElementStates.Default;
+        arr[j + 1].state = ElementStates.Default;
+
+        setArray && setArray([...arr]);
+      }
+
+      arr[arr.length - i - 1].state = ElementStates.Modified;
+      setArray && setArray([...arr]);
+    }
+    return arr;
+  }
 };
 
 export const SortingPage: React.FC = () => {
@@ -42,7 +136,7 @@ export const SortingPage: React.FC = () => {
   };
 
   const [mainArray, setMainArray] = useState<TMainArray>([]);
-  const [checked, setChecked] = useState<string>('select');
+  const [checked, setChecked] = useState<string>("select");
 
   const newRandomArr = () => {
     setMainArray(randomArr());
@@ -52,84 +146,6 @@ export const SortingPage: React.FC = () => {
   useEffect(() => {
     setMainArray(randomArr());
   }, []);
-
-  const swap = (
-    arr: Array<{ item: number; state: ElementStates }>,
-    setArray: Dispatch<SetStateAction<TMainArray>>,
-    firstIndex: number,
-    secondIndex: number
-  ) => {
-    const temp = arr[firstIndex];
-    arr[firstIndex] = arr[secondIndex];
-    arr[secondIndex] = temp;
-    setArray(arr);
-  };
-
-  const selectionSort = async (
-    arr: TMainArray,
-    direction: Direction,
-    setArray: Dispatch<SetStateAction<TMainArray>>
-  ) => {
-    const { length } = arr;
-
-    for (let i = 0; i < length - 1; i++) {
-      let maxInd = i;
-
-      for (let j = i; j < length; j++) {
-        arr[i].state = ElementStates.Changing;
-        arr[j].state = ElementStates.Changing;
-        setArray([...arr]);
-        await delay(1000);
-        if (direction === Direction.Descending) {
-          if (arr[maxInd].item < arr[j].item) {
-            maxInd = j;
-          }
-        } else if (direction === Direction.Ascending) {
-          if (arr[maxInd].item > arr[j].item) {
-            maxInd = j;
-          }
-        }
-        arr[j].state = ElementStates.Default;
-        setArray([...arr]);
-      }
-
-      swap(arr, setArray, i, maxInd);
-      arr[i].state = ElementStates.Modified;
-    }
-    arr[length - 1].state = ElementStates.Modified;
-    setArray([...arr]);
-  };
-
-  const bubbleSort = async (arr: TMainArray, direction: Direction, setArray: Dispatch<SetStateAction<TMainArray>>) => {
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr.length - i - 1; j++) {
-        arr[j].state = ElementStates.Changing;
-        arr[j + 1].state = ElementStates.Changing;
-        setArray([...arr]);
-        await delay(1000);
-
-        if (direction === Direction.Ascending) {
-          if (arr[j].item > arr[j + 1].item) {
-            // сортируем элементы по возрастанию
-            swap(arr, setArray, j, j + 1);
-          }
-        } else if (direction === Direction.Descending) {
-          if (arr[j].item < arr[j + 1].item) {
-            // сортируем элементы по возрастанию
-            swap(arr, setArray, j, j + 1);
-          }
-        }
-
-        arr[j].state = ElementStates.Default;
-        arr[j + 1].state = ElementStates.Default;
-
-        setArray([...arr]);
-      }
-
-      arr[arr.length - i - 1].state = ElementStates.Modified;
-      setArray([...arr]);
-    }
-  };
 
   const sortDescending = async () => {
     if (mainArray.length > 0) {
@@ -141,10 +157,10 @@ export const SortingPage: React.FC = () => {
         butDesLoad: true,
         butNewArr: true,
       });
-      if (checked === 'select') {
+      if (checked === "select") {
         await selectionSort(mainArray, Direction.Descending, setMainArray);
       }
-      if (checked === 'bubble') {
+      if (checked === "bubble") {
         await bubbleSort(mainArray, Direction.Descending, setMainArray);
       }
       setButState({
@@ -168,10 +184,10 @@ export const SortingPage: React.FC = () => {
         butDesLoad: false,
         butNewArr: true,
       });
-      if (checked === 'select') {
+      if (checked === "select") {
         await selectionSort(mainArray, Direction.Ascending, setMainArray);
       }
-      if (checked === 'bubble') {
+      if (checked === "bubble") {
         await bubbleSort(mainArray, Direction.Ascending, setMainArray);
       }
       setButState({
@@ -191,15 +207,15 @@ export const SortingPage: React.FC = () => {
         <div className={styles.method}>
           <RadioInput
             value="select"
-            checked={checked === 'select'}
-            onChange={() => setChecked('select')}
+            checked={checked === "select"}
+            onChange={() => setChecked("select")}
             label="Выбор"
             disabled={butState.radioInput}
           />
           <RadioInput
             value="bubble"
-            checked={checked === 'bubble'}
-            onChange={() => setChecked('bubble')}
+            checked={checked === "bubble"}
+            onChange={() => setChecked("bubble")}
             label="Пузырёк"
             disabled={butState.radioInput}
           />
@@ -222,7 +238,12 @@ export const SortingPage: React.FC = () => {
             sorting={Direction.Descending}
           />
         </div>
-        <Button text="Новый массив" type="button" disabled={butState.butNewArr} onClick={newRandomArr} />
+        <Button
+          text="Новый массив"
+          type="button"
+          disabled={butState.butNewArr}
+          onClick={newRandomArr}
+        />
       </div>
       {mainArray && (
         <ul className={styles.list}>
