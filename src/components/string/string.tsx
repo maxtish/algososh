@@ -98,12 +98,14 @@ export const StringComponent: React.FC = () => {
     <SolutionLayout title="Строка">
       <form className={styles.form} onSubmit={onSubmit}>
         <Input
+          data-cy="input"
           isLimitText={true}
           maxLength={11}
           value={input || ""}
           onChange={onChange}
         />
         <Button
+          data-cy="button"
           text="Развернуть"
           type="submit"
           isLoader={isLoading}
