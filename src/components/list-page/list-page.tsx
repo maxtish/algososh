@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import { Input } from '../ui/input/input';
-import { Button } from '../ui/button/button';
-import styles from './list-page.module.css';
-import { ElementStates } from '../../types/element-states';
-import { LinkedList } from './Index';
-import { Circle } from '../ui/circle/circle';
-import { ArrowIcon } from '../ui/icons/arrow-icon';
-import { useForm } from '../../hooks/useForm';
-import { delay } from '../string/string';
+import React, { useEffect, useMemo, useState } from "react";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { Input } from "../ui/input/input";
+import { Button } from "../ui/button/button";
+import styles from "./list-page.module.css";
+import { ElementStates } from "../../types/element-states";
+import { LinkedList } from "./Index";
+import { Circle } from "../ui/circle/circle";
+import { ArrowIcon } from "../ui/icons/arrow-icon";
+import { useForm } from "../../hooks/useForm";
+import { delay } from "../string/string";
 
 type TElem = { item: string; state: ElementStates };
 
@@ -18,7 +18,10 @@ type elemSmallCircle = {
 };
 
 export const ListPage: React.FC = () => {
-  const { values, onChange, setValues } = useForm({ inputElement: '', inputIndex: '' });
+  const { values, onChange, setValues } = useForm({
+    inputElement: "",
+    inputIndex: "",
+  });
   const [mainArray, setMainArray] = useState<Array<TElem>>([]);
   const [isLoader, setIsLoader] = useState({
     forButtHead: false,
@@ -30,14 +33,21 @@ export const ListPage: React.FC = () => {
     allDis: false,
   });
   const [list, setList] = useState(new LinkedList<TElem>());
-  const [newElemInHead, setNewElemInHead] = useState<elemSmallCircle | null>(null);
-  const [delElemInTail, setDelElemInTail] = useState<elemSmallCircle | null>(null);
+  const [newElemInHead, setNewElemInHead] = useState<elemSmallCircle | null>(
+    null
+  );
+  const [delElemInTail, setDelElemInTail] = useState<elemSmallCircle | null>(
+    null
+  );
 
   // Валидация кнопок индекс
   const isValidIndex = useMemo(() => {
     if (values.inputIndex.length === 0) {
       return false;
-    } else if (Number(values.inputIndex) < mainArray.length && Number(values.inputIndex) > -1) {
+    } else if (
+      Number(values.inputIndex) < mainArray.length &&
+      Number(values.inputIndex) > -1
+    ) {
       return true;
     } else {
       return false;
@@ -64,7 +74,7 @@ export const ListPage: React.FC = () => {
       item: values.inputElement,
       state: ElementStates.Default,
     };
-    setValues({ ...values, inputElement: '' });
+    setValues({ ...values, inputElement: "" });
     //Покажим элемент в head
     setNewElemInHead({ item: newElem.item, index: 0 });
     await delay(500);
@@ -93,7 +103,7 @@ export const ListPage: React.FC = () => {
       item: values.inputElement,
       state: ElementStates.Default,
     };
-    setValues({ ...values, inputElement: '' });
+    setValues({ ...values, inputElement: "" });
     //Покажим элемент в head
     setNewElemInHead({ item: newElem.item, index: mainArray.length - 1 });
     await delay(500);
@@ -129,7 +139,7 @@ export const ListPage: React.FC = () => {
     setDelElemInTail({ item: mainArray[0].item, index: 0 });
     const colorArr = mainArray.map((elem, currIndex) => {
       if (currIndex === 0) {
-        return { item: '', state: ElementStates.Default };
+        return { item: "", state: ElementStates.Default };
       } else {
         return elem;
       }
@@ -160,7 +170,7 @@ export const ListPage: React.FC = () => {
         return elem;
       } else {
         return {
-          item: '',
+          item: "",
           state: ElementStates.Default,
         };
       }
@@ -191,7 +201,7 @@ export const ListPage: React.FC = () => {
       state: ElementStates.Default,
     };
     const index = Number(values.inputIndex);
-    setValues({ ...values, inputElement: '', inputIndex: '' });
+    setValues({ ...values, inputElement: "", inputIndex: "" });
 
     const colorArr: Array<TElem> = mainArray.map((elem) => {
       return {
@@ -243,7 +253,7 @@ export const ListPage: React.FC = () => {
       allDis: true,
     }));
     let index = Number(values.inputIndex);
-    setValues({ ...values, inputIndex: '' });
+    setValues({ ...values, inputIndex: "" });
 
     const colorArr: Array<TElem> = mainArray.map((elem) => {
       return {
@@ -264,7 +274,7 @@ export const ListPage: React.FC = () => {
         setMainArray([...colorArr]);
         await delay(500);
 
-        colorArr[i].item = '';
+        colorArr[i].item = "";
         setMainArray([...colorArr]);
         setDelElemInTail({ item: mainArray[index].item, index: index });
         await delay(500);
@@ -287,6 +297,7 @@ export const ListPage: React.FC = () => {
       <section className={styles.container}>
         <div className={styles.wrapper}>
           <Input
+            data-cy="input-value"
             type="text"
             isLimitText={true}
             maxLength={4}
@@ -297,24 +308,28 @@ export const ListPage: React.FC = () => {
             disabled={isLoader.allDis}
           />
           <Button
+            data-cy="button-add-head"
             text="Добавить в head"
             onClick={addInHead}
             isLoader={isLoader.forButtHead}
             disabled={values.inputElement.length === 0 || isLoader.allDis}
           />
           <Button
+            data-cy="button-add-tail"
             text="Добавить в tail"
             onClick={addInTail}
             isLoader={isLoader.forButtTail}
             disabled={values.inputElement.length === 0 || isLoader.allDis}
           />
           <Button
+            data-cy="button-del-head"
             text="Удалить из head"
             onClick={deleteFromHead}
             isLoader={isLoader.forButtDelHead}
             disabled={mainArray.length === 0 || isLoader.allDis}
           />
           <Button
+            data-cy="button-del-tail"
             text="Удалить из tail"
             onClick={deleteFromTail}
             isLoader={isLoader.forButtDelTail}
@@ -323,6 +338,7 @@ export const ListPage: React.FC = () => {
         </div>
         <div className={styles.wrapindex}>
           <Input
+            data-cy="input-index"
             type="number"
             placeholder="Введите индекс"
             name="inputIndex"
@@ -331,16 +347,22 @@ export const ListPage: React.FC = () => {
             disabled={isLoader.allDis}
           />
           <Button
+            data-cy="button-add-index"
             text="Добавить по индексу"
             onClick={addByIndex}
             isLoader={isLoader.forButtAddByInd}
-            disabled={values.inputElement.length !== 0 && isValidIndex ? false : true}
+            disabled={
+              values.inputElement.length !== 0 && isValidIndex ? false : true
+            }
           />
           <Button
+            data-cy="button-del-index"
             text="Удалить по индексу"
             onClick={deleteByIndex}
             isLoader={isLoader.forButtDelByInd}
-            disabled={mainArray.length === 0 || isLoader.allDis || !isValidIndex}
+            disabled={
+              mainArray.length === 0 || isLoader.allDis || !isValidIndex
+            }
           />
         </div>
       </section>
@@ -354,16 +376,24 @@ export const ListPage: React.FC = () => {
                 index={index}
                 head={
                   newElemInHead?.index === index ? (
-                    <Circle letter={newElemInHead.item} state={ElementStates.Changing} isSmall />
+                    <Circle
+                      letter={newElemInHead.item}
+                      state={ElementStates.Changing}
+                      isSmall
+                    />
                   ) : index === 0 ? (
-                    'head'
+                    "head"
                   ) : null
                 }
                 tail={
                   delElemInTail?.index === index ? (
-                    <Circle letter={delElemInTail.item} state={ElementStates.Changing} isSmall />
+                    <Circle
+                      letter={delElemInTail.item}
+                      state={ElementStates.Changing}
+                      isSmall
+                    />
                   ) : index === mainArray.length - 1 ? (
-                    'tail'
+                    "tail"
                   ) : null
                 }
               />

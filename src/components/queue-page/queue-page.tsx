@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import styles from './queue-page.module.css';
-import { Enqueue } from './index';
-import { useSimpleForm } from '../../hooks/useForm';
-import { ElementStates } from '../../types/element-states';
-import { delay } from '../string/string';
-import { Button } from '../ui/button/button';
-import { Input } from '../ui/input/input';
-import { Circle } from '../ui/circle/circle';
+import React, { useState } from "react";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import styles from "./queue-page.module.css";
+import { Enqueue } from "./index";
+import { useSimpleForm } from "../../hooks/useForm";
+import { ElementStates } from "../../types/element-states";
+import { delay } from "../string/string";
+import { Button } from "../ui/button/button";
+import { Input } from "../ui/input/input";
+import { Circle } from "../ui/circle/circle";
 
 type TElemArray = {
   item?: string;
@@ -17,7 +17,7 @@ type TElemArray = {
 };
 
 export const QueuePage: React.FC = () => {
-  const { input, onChange, setInput } = useSimpleForm('');
+  const { input, onChange, setInput } = useSimpleForm("");
   const [mainArray, setMainArray] = useState<Array<TElemArray>>(
     Array.from({ length: 7 }, () => ({
       state: ElementStates.Default,
@@ -50,8 +50,13 @@ export const QueuePage: React.FC = () => {
       mainArray[indexTail - 1].isTail = false;
     }
     setMainArray([...mainArray]);
-    setInput('');
-    setButtonState((prev) => ({ ...prev, butAdd: false, butClean: false, butDel: false }));
+    setInput("");
+    setButtonState((prev) => ({
+      ...prev,
+      butAdd: false,
+      butClean: false,
+      butDel: false,
+    }));
     setIndexTail(queue.getIndexTail());
     setIndexHead(queue.getIndexHead());
   };
@@ -62,7 +67,7 @@ export const QueuePage: React.FC = () => {
     if (indexHead === indexTail - 1) {
       if (indexHead === 6) {
         mainArray[indexHead] = {
-          item: '',
+          item: "",
           state: ElementStates.Default,
           isTail: false,
           isHead: true,
@@ -84,7 +89,7 @@ export const QueuePage: React.FC = () => {
     await delay(500);
     queue.dequeue();
     mainArray[indexHead] = {
-      item: '',
+      item: "",
       state: ElementStates.Default,
       isHead: true,
     };
@@ -97,7 +102,7 @@ export const QueuePage: React.FC = () => {
   const cleanQueue = () => {
     queue.clean();
     mainArray.forEach((item) => {
-      item.item = '';
+      item.item = "";
       item.state = ElementStates.Default;
       item.isTail = false;
       item.isHead = false;
@@ -117,8 +122,16 @@ export const QueuePage: React.FC = () => {
     <SolutionLayout title="Очередь">
       <div className={styles.wrapper}>
         <div className={styles.container}>
-          <Input type="text" isLimitText={true} maxLength={4} value={input} onChange={onChange} />
+          <Input
+            data-cy="input"
+            type="text"
+            isLimitText={true}
+            maxLength={4}
+            value={input}
+            onChange={onChange}
+          />
           <Button
+            data-cy="button-add"
             text="Добавить"
             type="button"
             disabled={input.length === 0 || indexTail === 7 ? true : false}
@@ -126,6 +139,7 @@ export const QueuePage: React.FC = () => {
             onClick={addInQueue}
           />
           <Button
+            data-cy="button-del"
             text="Удалить"
             type="button"
             isLoader={buttonState.butDelLoad}
@@ -133,7 +147,13 @@ export const QueuePage: React.FC = () => {
             onClick={delFromQueue}
           />
         </div>
-        <Button text="Очистить" type="button" disabled={buttonState.butClean} onClick={cleanQueue} />
+        <Button
+          data-cy="button-clean"
+          text="Очистить"
+          type="button"
+          disabled={buttonState.butClean}
+          onClick={cleanQueue}
+        />
       </div>
       <ul className={styles.list}>
         {mainArray.map((item, index) => (
@@ -141,8 +161,8 @@ export const QueuePage: React.FC = () => {
             <Circle
               letter={item.item}
               index={index}
-              head={item.isHead && queue.getIndexHead() === index ? 'head' : ''}
-              tail={item.isTail ? 'tail' : ''}
+              head={item.isHead && queue.getIndexHead() === index ? "head" : ""}
+              tail={item.isTail ? "tail" : ""}
               state={item.state}
             />
           </li>

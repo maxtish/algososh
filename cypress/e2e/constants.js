@@ -6,3 +6,5 @@ export const cssBorderColor = {
 
 export const circle = "[class^='circle_circle']";
 export const headCircle = "[class*='circle_head']";
+export const tailCircle = "[class*='circle_tail']";
+export const smallCircle = "[class*='circle_small']";
