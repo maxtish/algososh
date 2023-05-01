@@ -1,8 +1,4 @@
-const cssBorderColor = {
-  default: "rgb(0, 50, 255)",
-  changing: "rgb(210, 82, 225)",
-  modified: "rgb(127, 224, 81)",
-};
+import { circle, cssBorderColor } from "./constants";
 
 const testStepsReverse = [
   [
@@ -53,7 +49,7 @@ describe("Test component string", () => {
     cy.get("@button").should("be.enabled").click();
 
     testStepsReverse.forEach((step) => {
-      cy.get("[class^='circle_circle']")
+      cy.get(circle)
         .should("have.length", 5)
         .each((el, index) => {
           cy.get(el).contains(step[index].item);

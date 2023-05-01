@@ -1,3 +1,5 @@
+import { circle } from "./constants";
+
 const testStepsFibonacci = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
 
 describe("Test component fibonacci", () => {
@@ -16,7 +18,7 @@ describe("Test component fibonacci", () => {
     cy.get("@input").type(testStepsFibonacci.length - 1);
     cy.get("@button").should("be.enabled").click();
     cy.wait(testStepsFibonacci.length * 500);
-    cy.get("[class^='circle_circle']").each((el, index) => {
+    cy.get(circle).each((el, index) => {
       cy.get(el).contains(testStepsFibonacci[index]);
     });
   });
