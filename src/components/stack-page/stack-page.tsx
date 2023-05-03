@@ -1,27 +1,30 @@
-import React, { useState } from 'react';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import { Input } from '../ui/input/input';
-import { Button } from '../ui/button/button';
-import { useSimpleForm } from '../../hooks/useForm';
-import { ElementStates } from '../../types/element-states';
-import { Circle } from '../ui/circle/circle';
-import styles from './stack-page.module.css';
-import { Stack } from '.';
-import { delay } from '../string/string';
+import React, { useState } from "react";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { Input } from "../ui/input/input";
+import { Button } from "../ui/button/button";
+import { useSimpleForm } from "../../hooks/useForm";
+import { ElementStates } from "../../types/element-states";
+import { Circle } from "../ui/circle/circle";
+import styles from "./stack-page.module.css";
+import { Stack } from ".";
+import { delay } from "../string/string";
 
 type TElemArray = { item: string; state: ElementStates };
 
 export const StackPage: React.FC = () => {
-  const { input, onChange, setInput } = useSimpleForm('');
+  const { input, onChange, setInput } = useSimpleForm("");
   const [mainArray, setMainArray] = useState<Array<TElemArray>>([]);
   const [stack] = useState(new Stack<TElemArray>());
-  const [buttonState, setButtonState] = useState({ butAdd: false, butDel: false });
+  const [buttonState, setButtonState] = useState({
+    butAdd: false,
+    butDel: false,
+  });
 
   const addInStack = async () => {
     setButtonState((prev) => ({ ...prev, butAdd: true }));
     stack.enqueue({ item: input, state: ElementStates.Changing });
     setMainArray([...stack.getItems()]);
-    setInput('');
+    setInput("");
     await delay(500);
     stack.peak()!.state = ElementStates.Default;
     setMainArray([...stack.getItems()]);
@@ -48,15 +51,24 @@ export const StackPage: React.FC = () => {
     <SolutionLayout title="Стек">
       <div className={styles.wrapper}>
         <div className={styles.container}>
-          <Input type="text" isLimitText={true} maxLength={4} value={input} onChange={onChange} />
+          <Input
+            data-cy="input"
+            type="text"
+            isLimitText={true}
+            maxLength={4}
+            value={input}
+            onChange={onChange}
+          />
           <Button
+            data-cy="button-add"
             text="Добавить"
             type="button"
-            disabled={input === ''}
+            disabled={input === ""}
             isLoader={buttonState.butAdd}
             onClick={addInStack}
           />
           <Button
+            data-cy="button-del"
             text="Удалить"
             type="button"
             isLoader={buttonState.butDel}
@@ -64,7 +76,13 @@ export const StackPage: React.FC = () => {
             onClick={delFromStack}
           />
         </div>
-        <Button text="Очистить" type="button" disabled={stack.isEmpty()} onClick={cleanStack} />
+        <Button
+          data-cy="button-clean"
+          text="Очистить"
+          type="button"
+          disabled={stack.isEmpty()}
+          onClick={cleanStack}
+        />
       </div>
       <ul className={styles.list}>
         {mainArray &&
@@ -74,7 +92,7 @@ export const StackPage: React.FC = () => {
                 letter={item.item}
                 state={item.state}
                 index={index}
-                head={index === stack.getSize() - 1 ? 'top' : ''}
+                head={index === stack.getSize() - 1 ? "top" : ""}
               />
             </li>
           ))}
